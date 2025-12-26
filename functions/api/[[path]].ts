@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { handle } from "hono/cloudflare-pages";
 import { html, raw } from "hono/html";
 import { marked } from "marked";
 
@@ -7,7 +8,7 @@ type Bindings = {
   EARLIEST_DATE?: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
 const DEFAULT_EARLIEST_DATE = "2025-12-25";
 
@@ -70,14 +71,14 @@ const renderEntries = (entries: Awaited<ReturnType<typeof fetchEntriesForDate>>)
   return html`${entries.map((entry) => renderEntryHtml(entry))}`;
 };
 
-app.get("/api/meta", (c) => {
+app.get("/meta", (c) => {
   const minDate = c.env.EARLIEST_DATE ?? DEFAULT_EARLIEST_DATE;
   const maxDate = formatJstDate(new Date());
   const defaultDate = resolveDate(c.req.query("date"), maxDate);
   return c.json({ minDate, maxDate, defaultDate });
 });
 
-app.get("/api/entry", async (c) => {
+app.get("/entry", async (c) => {
   const minDate = c.env.EARLIEST_DATE ?? DEFAULT_EARLIEST_DATE;
   const maxDate = formatJstDate(new Date());
   const date = resolveDate(c.req.query("date"), maxDate);
@@ -90,4 +91,4 @@ app.get("/api/entry", async (c) => {
   return c.html(renderEntries(entries));
 });
 
-export default app;
+export const onRequest = handle(app);
