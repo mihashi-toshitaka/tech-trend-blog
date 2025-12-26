@@ -29,6 +29,13 @@ const resolveDate = (input: string | undefined, fallback: string) => {
 const validateDateRange = (date: string, minDate: string, maxDate: string) =>
   date >= minDate && date <= maxDate;
 
+const getDateContext = (env: Bindings, requestedDate?: string) => {
+  const minDate = env.EARLIEST_DATE ?? DEFAULT_EARLIEST_DATE;
+  const maxDate = formatJstDate(new Date());
+  const defaultDate = resolveDate(requestedDate, maxDate);
+  return { minDate, maxDate, defaultDate };
+};
+
 const fetchEntriesForDate = async (db: D1Database, date: string) => {
   const { results } = await db
     .prepare(
@@ -72,16 +79,19 @@ const renderEntries = (entries: Awaited<ReturnType<typeof fetchEntriesForDate>>)
 };
 
 app.get("/meta", (c) => {
-  const minDate = c.env.EARLIEST_DATE ?? DEFAULT_EARLIEST_DATE;
-  const maxDate = formatJstDate(new Date());
-  const defaultDate = resolveDate(c.req.query("date"), maxDate);
+  const { minDate, maxDate, defaultDate } = getDateContext(
+    c.env,
+    c.req.query("date")
+  );
   return c.json({ minDate, maxDate, defaultDate });
 });
 
 app.get("/entry", async (c) => {
-  const minDate = c.env.EARLIEST_DATE ?? DEFAULT_EARLIEST_DATE;
-  const maxDate = formatJstDate(new Date());
-  const date = resolveDate(c.req.query("date"), maxDate);
+  const { minDate, maxDate, defaultDate } = getDateContext(
+    c.env,
+    c.req.query("date")
+  );
+  const date = defaultDate;
   if (!validateDateRange(date, minDate, maxDate)) {
     return c.html(
       html`<p class="text-danger">選択できる日付の範囲外です。</p>`
