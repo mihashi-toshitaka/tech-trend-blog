@@ -2,8 +2,10 @@
 
 ## プロジェクトの資産
 
-- Cloudflare Pages Functions (`functions/[[path]].ts`)
-  - Hono を使ったルーティングでブログ画面と API を提供します。
+- Cloudflare Pages Functions (`functions/api/[[path]].ts`)
+  - Hono を使ったルーティングで API を提供します。
+- フロントエンド
+  - `public/index.html` をビルドで `dist/` にコピーして配信します。
 - D1 データベース (`trend_entries`)
   - `raw_response` に保存された Markdown を記事として表示します。
   - `slot` が 0/1 の両方ある場合は 2 本表示します。
@@ -39,6 +41,12 @@ npm install
 npx wrangler pages dev . --d1=DB
 ```
 
-### 5. 環境変数
+### 5. ビルド
+
+```bash
+npm run build
+```
+
+### 6. 環境変数
 
 - `EARLIEST_DATE` : 過去記事の遡り開始日（初期値 `2025-12-25`）
