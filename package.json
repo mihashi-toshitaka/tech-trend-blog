@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler pages dev .",
+    "build": "rm -rf dist && mkdir -p dist && cp -R public/. dist/",
     "format": "prettier --write ."
   },
   "dependencies": {
