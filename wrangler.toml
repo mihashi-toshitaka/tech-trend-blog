@@ -1,11 +1,11 @@
 name = "tech-trend-blog"
-compatibility_date = "2024-10-01"
+compatibility_date = "2025-12-25"
 pages_build_output_dir = "dist"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "tech-trend-blog"
-database_id = "YOUR_DATABASE_ID"
+database_id = "37894c30-f160-47dc-bd83-7b5d24bda13c"
 
 [vars]
 EARLIEST_DATE = "2025-12-25"
