@@ -8,4 +8,4 @@ database_name = "tech-trend-blog"
 database_id = "37894c30-f160-47dc-bd83-7b5d24bda13c"
 
 [vars]
-EARLIEST_DATE = "2025-12-25"
+EARLIEST_DATE = "2025-12-29"
